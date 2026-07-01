@@ -1,0 +1,32 @@
+{
+  "name": "google-serp-scraper",
+  "version": "1.0.0",
+  "description": "Web app for scraping Google organic search results",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc && npm run copy-public",
+    "copy-public": "node -e \"const fs=require('fs');const p=require('path');const s='src/public';const d='dist/public';fs.mkdirSync(d,{recursive:true});for(const f of fs.readdirSync(s))fs.copyFileSync(p.join(s,f),p.join(d,f));\"",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "start": "node dist/server.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "keywords": ["google", "scraper", "serp"],
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.2",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.2"
+  }
+}
