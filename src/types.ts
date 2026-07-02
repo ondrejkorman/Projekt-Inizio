@@ -15,11 +15,14 @@ export interface SearchResponse {
 }
 
 /**
- * Výjimka při blokaci Google (CAPTCHA) nebo neočekávané struktuře stránky.
+ * Výjimka při chybě volání Serper API nebo konfigurace.
  */
-export class GoogleScrapeError extends Error {
+export class SearchApiError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'GoogleScrapeError';
+    this.name = 'SearchApiError';
   }
 }
+
+/** @deprecated Použijte SearchApiError – ponecháno kvůli zpětné kompatibilitě testů. */
+export const GoogleScrapeError = SearchApiError;

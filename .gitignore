@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+.cache/
 
 # Logs
 *.log
@@ -10,7 +11,9 @@ npm-debug.log*
 
 # Environment
 .env
-.env.*
+.env.local
+.env.*.local
+!.env.example
 
 # OS
 .DS_Store

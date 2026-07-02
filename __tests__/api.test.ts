@@ -1,9 +1,10 @@
 import request from 'supertest';
 import { createApp } from '../src/server';
-import * as googleScraper from '../src/googleScraper';
+import * as googleSearch from '../src/googleSearch';
+import { resetRateLimitStore } from '../src/rateLimit';
 import { OrganicResult } from '../src/types';
 
-jest.mock('../src/googleScraper');
+jest.mock('../src/googleSearch');
 
 const mockResults: OrganicResult[] = [
   {
@@ -19,10 +20,11 @@ describe('GET /api/search', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetRateLimitStore();
   });
 
   it('vrátí 200 a správně formátovaný JSON při platném dotazu', async () => {
-    jest.spyOn(googleScraper, 'searchGoogle').mockResolvedValue(mockResults);
+    jest.spyOn(googleSearch, 'searchGoogle').mockResolvedValue(mockResults);
 
     const res = await request(app).get('/api/search').query({ q: 'test' });
 
@@ -39,7 +41,7 @@ describe('GET /api/search', () => {
         },
       ],
     });
-    expect(googleScraper.searchGoogle).toHaveBeenCalledWith('test');
+    expect(googleSearch.searchGoogle).toHaveBeenCalledWith('test');
   });
 
   it('vrátí 400 při chybějícím parametru q', async () => {
@@ -49,7 +51,7 @@ describe('GET /api/search', () => {
     expect(res.body).toMatchObject({
       error: expect.stringMatching(/chybí parametr q/i),
     });
-    expect(googleScraper.searchGoogle).not.toHaveBeenCalled();
+    expect(googleSearch.searchGoogle).not.toHaveBeenCalled();
   });
 
   it('vrátí 400 při prázdném parametru q', async () => {
@@ -60,7 +62,7 @@ describe('GET /api/search', () => {
   });
 
   it('vrátí 200 s prázdným polem results při žádných výsledcích', async () => {
-    jest.spyOn(googleScraper, 'searchGoogle').mockResolvedValue([]);
+    jest.spyOn(googleSearch, 'searchGoogle').mockResolvedValue([]);
 
     const res = await request(app).get('/api/search').query({ q: 'nicnenajdes' });
 
@@ -68,15 +70,15 @@ describe('GET /api/search', () => {
     expect(res.body.results).toEqual([]);
   });
 
-  it('vrátí 502 při GoogleScrapeError', async () => {
-    const { GoogleScrapeError } = await import('../src/types');
+  it('vrátí 502 při SearchApiError', async () => {
+    const { SearchApiError } = await import('../src/types');
     jest
-      .spyOn(googleScraper, 'searchGoogle')
-      .mockRejectedValue(new GoogleScrapeError('Google blokace'));
+      .spyOn(googleSearch, 'searchGoogle')
+      .mockRejectedValue(new SearchApiError('Neplatný SERPER_API_KEY'));
 
     const res = await request(app).get('/api/search').query({ q: 'test' });
 
     expect(res.status).toBe(502);
-    expect(res.body.error).toMatch(/blokace/i);
+    expect(res.body.error).toMatch(/SERPER_API_KEY/i);
   });
 });

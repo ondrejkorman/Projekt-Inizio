@@ -1,0 +1,51 @@
+{
+  "searchParameters": {
+    "q": "pes",
+    "gl": "cz",
+    "hl": "cs"
+  },
+  "organic": [
+    {
+      "title": "Pes domácí – Wikipedie",
+      "link": "https://cs.wikipedia.org/wiki/Pes_dom%C3%A1c%C3%AD",
+      "snippet": "Pes domácí je nejstarší domestikované zvíře, které se vyvinulo z vlka.",
+      "position": 1
+    },
+    {
+      "title": "Chov psů – průvodce pro začátečníky",
+      "link": "https://www.example.com/chov-psu",
+      "snippet": "Základní informace o péči, výživě a výchově psů.",
+      "position": 2
+    },
+    {
+      "title": "Plemena psů v České republice",
+      "link": "https://www.example.com/plemena-psu",
+      "snippet": "Přehled nejoblíbenějších plemen psů chovaných v ČR.",
+      "position": 3
+    },
+    {
+      "title": "Veterinární poradna pro majitele psů",
+      "link": "https://www.example.com/veterina-pes",
+      "snippet": "Odpovědi na nejčastější zdravotní otázky týkající se psů.",
+      "position": 4
+    },
+    {
+      "title": "Adoptuj psa – útulky v Česku",
+      "link": "https://www.example.com/adopce-psu",
+      "snippet": "Seznam útulků a psů k adopci ve vašem okolí.",
+      "position": 5
+    },
+    {
+      "title": "Výcvik psa – základní povely",
+      "link": "https://www.example.com/vycvik-psa",
+      "snippet": "Jak naučit psa sedni, lehni a přijď na povel.",
+      "position": 6
+    },
+    {
+      "title": "Krmivo pro psy – srovnání značek",
+      "link": "https://www.example.com/krmivo-pro-psy",
+      "snippet": "Recenze granulí a konzerv pro psy různých velikostí.",
+      "position": 7
+    }
+  ]
+}

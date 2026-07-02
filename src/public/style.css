@@ -34,6 +34,21 @@ h1 {
   font-size: 0.95rem;
 }
 
+.legal-notice {
+  background: #fff8e6;
+  border: 1px solid #f0d78c;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #5c4a1a;
+}
+
+.legal-notice a {
+  color: #1a4fb0;
+}
+
 .search-form {
   display: flex;
   gap: 0.5rem;

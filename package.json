@@ -1,7 +1,7 @@
 {
   "name": "google-serp-scraper",
   "version": "1.0.0",
-  "description": "Web app for scraping Google organic search results",
+  "description": "Web app for Google organic search results via Serper.dev API",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc && npm run copy-public",
@@ -11,11 +11,10 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "keywords": ["google", "scraper", "serp"],
+  "keywords": ["google", "serp", "serper"],
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.7.9",
-    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2"
   },
   "devDependencies": {

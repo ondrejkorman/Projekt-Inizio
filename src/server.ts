@@ -1,7 +1,11 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
-import { searchGoogle } from './googleScraper';
-import { GoogleScrapeError, SearchResponse } from './types';
+import { searchGoogle } from './googleSearch';
+import { rateLimitMiddleware } from './rateLimit';
+import { SearchApiError, SearchResponse } from './types';
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -11,7 +15,7 @@ export function createApp(): express.Application {
   const publicDir = path.join(__dirname, 'public');
   app.use(express.static(publicDir));
 
-  app.get('/api/search', async (req: Request, res: Response, next: NextFunction) => {
+  app.get('/api/search', rateLimitMiddleware, async (req: Request, res: Response, next: NextFunction) => {
     try {
       const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
 
@@ -32,7 +36,7 @@ export function createApp(): express.Application {
 
       res.status(200).json(payload);
     } catch (err) {
-      if (err instanceof GoogleScrapeError) {
+      if (err instanceof SearchApiError) {
         res.status(502).json({
           error: err.message,
         });
