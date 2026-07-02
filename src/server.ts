@@ -6,6 +6,7 @@ import path from 'path';
 import { searchGoogle } from './googleSearch';
 import { rateLimitMiddleware } from './rateLimit';
 import { SearchApiError, SearchResponse } from './types';
+import { validateSearchQuery } from './validateQuery';
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -17,19 +18,17 @@ export function createApp(): express.Application {
 
   app.get('/api/search', rateLimitMiddleware, async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+      const validation = validateSearchQuery(req.query.q);
 
-      if (!q) {
-        res.status(400).json({
-          error: 'Chybí parametr q – zadejte vyhledávací dotaz.',
-        });
+      if (!validation.valid) {
+        res.status(400).json({ error: validation.error });
         return;
       }
 
-      const results = await searchGoogle(q);
+      const results = await searchGoogle(validation.query);
 
       const payload: SearchResponse = {
-        query: q,
+        query: validation.query,
         fetchedAt: new Date().toISOString(),
         results,
       };

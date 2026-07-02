@@ -2,6 +2,7 @@ import request from 'supertest';
 import { createApp } from '../src/server';
 import * as googleSearch from '../src/googleSearch';
 import { resetRateLimitStore } from '../src/rateLimit';
+import { MAX_QUERY_LENGTH } from '../src/validateQuery';
 import { OrganicResult } from '../src/types';
 
 jest.mock('../src/googleSearch');
@@ -58,7 +59,34 @@ describe('GET /api/search', () => {
     const res = await request(app).get('/api/search').query({ q: '   ' });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toBeDefined();
+    expect(res.body.error).toMatch(/chybí parametr q/i);
+    expect(googleSearch.searchGoogle).not.toHaveBeenCalled();
+  });
+
+  it('vrátí 400 při dotazu pouze z whitespace znaků', async () => {
+    const res = await request(app).get('/api/search').query({ q: '\t\n  \t' });
+
+    expect(res.status).toBe(400);
+    expect(googleSearch.searchGoogle).not.toHaveBeenCalled();
+  });
+
+  it('vrátí 400 při příliš dlouhém dotazu', async () => {
+    const longQuery = 'a'.repeat(MAX_QUERY_LENGTH + 1);
+    const res = await request(app).get('/api/search').query({ q: longQuery });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/příliš dlouhý/i);
+    expect(googleSearch.searchGoogle).not.toHaveBeenCalled();
+  });
+
+  it('vrátí 200 pro dotaz s diakritikou', async () => {
+    jest.spyOn(googleSearch, 'searchGoogle').mockResolvedValue(mockResults);
+
+    const res = await request(app).get('/api/search').query({ q: 'žížala' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.query).toBe('žížala');
+    expect(googleSearch.searchGoogle).toHaveBeenCalledWith('žížala');
   });
 
   it('vrátí 200 s prázdným polem results při žádných výsledcích', async () => {

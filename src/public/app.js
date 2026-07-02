@@ -36,8 +36,9 @@ function hideStatus() {
 function setLoading(loading) {
   searchBtn.disabled = loading;
   queryInput.disabled = loading;
+  searchBtn.textContent = loading ? 'Načítám…' : 'Hledat';
   if (loading) {
-    showStatus('Načítám výsledky z Google…', 'loading');
+    showStatus('Načítám výsledky…', 'loading');
   }
 }
 
@@ -170,17 +171,28 @@ form.addEventListener('submit', async (e) => {
 
   try {
     const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-    const data = await res.json();
+    let data = {};
+    try {
+      data = await res.json();
+    } catch {
+      data = {};
+    }
 
     if (!res.ok) {
       showStatus(data.error || `Chyba serveru (${res.status})`, 'error');
+      resultsSection.hidden = true;
+      downloadJsonBtn.disabled = true;
+      downloadCsvBtn.disabled = true;
       return;
     }
 
     hideStatus();
     renderResults(data);
   } catch {
-    showStatus('Nepodařilo se spojit se serverem. Zkuste to znovu.', 'error');
+    showStatus('Nepodařilo se spojit se serverem. Zkontrolujte připojení a zkuste to znovu.', 'error');
+    resultsSection.hidden = true;
+    downloadJsonBtn.disabled = true;
+    downloadCsvBtn.disabled = true;
   } finally {
     setLoading(false);
   }
